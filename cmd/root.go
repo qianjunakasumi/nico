@@ -9,6 +9,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -40,7 +41,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.nico.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.config/nico.yaml)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -53,14 +54,12 @@ func initConfig() {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
-		// Find home directory.
 		home, err := os.UserHomeDir()
 		cobra.CheckErr(err)
 
-		// Search config in home directory with name ".nico" (without extension).
-		viper.AddConfigPath(home)
+		viper.AddConfigPath(filepath.Join(home, ".config"))
 		viper.SetConfigType("yaml")
-		viper.SetConfigName(".nico")
+		viper.SetConfigName("nico")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
