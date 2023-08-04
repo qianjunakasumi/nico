@@ -6,8 +6,12 @@
 
 package main
 
-import "github.com/qianjunakasumi/nico/cmd"
+import (
+	"github.com/qianjunakasumi/nico/cmd"
+	"github.com/rs/zerolog"
+)
 
 func main() {
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 	cmd.Execute()
 }
