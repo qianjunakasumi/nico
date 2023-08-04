@@ -5,6 +5,7 @@ length of URLs, custom links to highlight styles.
 
 ## System Requirements
 
+- Kubernetes (any version, but only tested in limited supported versions)
 - MongoDB 6.0 or above
 
 ## License
