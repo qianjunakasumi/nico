@@ -44,7 +44,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.config/nico.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.config/senjunico.yaml)")
 	rootCmd.PersistentFlags().BoolVar(&debugMode, "debug", false, "enable debug mode")
 
 	// Cobra also supports local flags, which will only run
@@ -63,7 +63,7 @@ func initConfig() {
 
 		viper.AddConfigPath(filepath.Join(home, ".config"))
 		viper.SetConfigType("yaml")
-		viper.SetConfigName("nico")
+		viper.SetConfigName("senjunico")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
