@@ -11,11 +11,13 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 var cfgFile string
+var debugMode bool
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -36,12 +38,14 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
+	cobra.OnInitialize(initLogger)
 
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.config/nico.yaml)")
+	rootCmd.PersistentFlags().BoolVar(&debugMode, "debug", false, "enable debug mode")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -67,5 +71,12 @@ func initConfig() {
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
+	}
+}
+
+func initLogger() {
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	if debugMode {
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
 	}
 }
