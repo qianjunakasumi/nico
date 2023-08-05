@@ -1,0 +1,23 @@
+version: 2
+updates:
+
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "daily"
+
+    assignees: [ "qianjunakasumi" ]
+    open-pull-requests-limit: 114
+    rebase-strategy: "disabled"
+    commit-message:
+      prefix: "chore:arrow_up:gomod "
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+
+    assignees: [ "qianjunakasumi" ]
+    rebase-strategy: "disabled"
+    commit-message:
+      prefix: "chore:arrow_up:actions "
