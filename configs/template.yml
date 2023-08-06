@@ -1,0 +1,2 @@
+listenAddress: '0.0.0.0:6426'
+mongodbUrl: 'mongodb://username:password@address-to-mongodb:27017/senjunico'
