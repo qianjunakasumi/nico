@@ -7,7 +7,14 @@
 package cmd
 
 import (
-	"fmt"
+	"context"
+	"os"
+	"os/signal"
+	"syscall"
+
+	"github.com/qianjunakasumi/nico/internal/service"
+
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
 
@@ -17,8 +24,28 @@ var serveCmd = &cobra.Command{
 	Short: "Enable nico service",
 	Long:  `Enable nico server service, listening network address for external services`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("serve called")
-		// todo pull up main server and init
+
+		sigCh := make(chan os.Signal, 1)
+		signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM /* docker stop */)
+
+		errCh := make(chan error)
+		nico := service.NewNicoService(nil) // todo manual di
+		go func() {
+			errCh <- nico.Run(context.Background())
+		}()
+
+		select {
+		case <-sigCh:
+			log.Info().Msg("Goodbye! Greeting from nico")
+			//todo close grpc/graphQL service
+			//todo close database connection
+
+			return
+		case err := <-errCh:
+			if err != nil {
+				log.Error().Err(err).Msg("Enable nico service failed")
+			}
+		}
 	},
 }
 
