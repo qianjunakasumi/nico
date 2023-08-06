@@ -13,9 +13,16 @@ type UID int64
 // IUIDService provide abstraction of global number allocator,
 // it's around to generate an UID
 type IUIDService interface {
-	// NewProvider return an IUIDService instance which actually serve nico
-	NewProvider() IUIDService
-
 	// Generate an UID
 	Generate() (UID, error)
+}
+
+type IUIDProvider interface {
+	// NewProvider return an IUIDService instance which actually serve nico
+	NewProvider() (IUIDService, error)
+}
+
+// NewProvider create an IUIDService
+func NewProvider(p IUIDProvider) (IUIDService, error) {
+	return p.NewProvider()
 }
