@@ -8,28 +8,39 @@ package database
 
 import (
 	"context"
+
+	"github.com/rs/zerolog/log"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"time"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-// initMongoConnection
-func initMongoConnection(url string) (*mongo.Database, error) {
-	// Connect database
-	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second)
-	defer cancel()
-	clientOptions := options.Client().ApplyURI(url)
-	client, err := mongo.Connect(ctx, clientOptions)
+// InitMongoConnection returns a mongo client and database connection
+func InitMongoConnection(ctx context.Context, url string) (client *mongo.Client, database *mongo.Database, err error) {
+	log.Debug().Str("target", url).Msg("connecting mongodb")
+
+	client, err = mongo.Connect(
+		ctx,
+		options.Client().ApplyURI(url),
+	)
 	if err != nil {
-		return nil, err
+		return
 	}
-	// ping
-	err = client.Ping(ctx, nil)
+
+	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
-		return nil, err
+		return
 	}
-	dataBase := client.Database("senjunico")
-	return dataBase, nil
+
+	database = client.Database("senjunico")
+	log.Debug().Msg("connected mongodb and apply database to senjunico")
+
+	return
+}
+
+// DisconnectMongo disconnects the mongo client
+func DisconnectMongo(ctx context.Context, mongo *mongo.Client) error {
+	return mongo.Disconnect(ctx)
 }
 
 // todo init mongo collections and documents (need data model)
